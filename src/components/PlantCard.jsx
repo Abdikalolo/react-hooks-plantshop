@@ -4,10 +4,12 @@ function PlantCard({ plant }) {
   const [soldOut, setSoldOut] = useState(false);
 
   return (
-    <li className="card">
+    <li data-testid="plant-item" className="card">
       <img src={plant.image} alt={plant.name} />
-      <h2>{plant.name}</h2>
-      <p>Price: ${plant.price}</p>
+
+      <h4>{plant.name}</h4>
+
+      <p>Price: {plant.price}</p>
 
       <button onClick={() => setSoldOut(true)}>
         {soldOut ? "Sold Out" : "In Stock"}
