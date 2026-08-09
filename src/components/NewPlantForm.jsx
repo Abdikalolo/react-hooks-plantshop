@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import NewPlantForm from "./NewPlantForm";
+import PlantList from "./PlantList";
+import Search from "./Search";
 
-function NewPlantForm() {
+function PlantPage() {
+  const [plants, setPlants] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/plants")
+      .then((response) => response.json())
+      .then((data) => setPlants(data));
+  }, []);
+
+  const addPlant = (newPlant) => {
+    fetch("http://localhost:3001/plants", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPlant),
+    })
+      .then((response) => response.json())
+      .then((plant) => {
+        setPlants([...plants, plant]);
+      });
+  };
+
   return (
-    <div className="new-plant-form">
-      <h2>New Plant</h2>
-      <form>
-        <input type="text" name="name" placeholder="Plant name" />
-        <input type="text" name="image" placeholder="Image URL" />
-        <input type="number" name="price" step="0.01" placeholder="Price" />
-        <button type="submit">Add Plant</button>
-      </form>
-    </div>
+    <main>
+      <NewPlantForm onAddPlant={addPlant} />
+      <Search />
+      <PlantList plants={plants} />
+    </main>
   );
 }
 
-export default NewPlantForm;
+export default PlantPage;
