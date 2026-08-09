@@ -1,38 +1,67 @@
-import React, { useEffect, useState } from "react";
-import NewPlantForm from "./NewPlantForm";
-import PlantList from "./PlantList";
-import Search from "./Search";
+import React, { useState } from "react";
 
-function PlantPage() {
-  const [plants, setPlants] = useState([]);
+function NewPlantForm({ onAddPlant }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    image: "",
+    price: "",
+  });
 
-  useEffect(() => {
-    fetch("http://localhost:3001/plants")
-      .then((response) => response.json())
-      .then((data) => setPlants(data));
-  }, []);
+  function handleChange(event) {
+    const { name, value } = event.target;
 
-  const addPlant = (newPlant) => {
-    fetch("http://localhost:3001/plants", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPlant),
-    })
-      .then((response) => response.json())
-      .then((plant) => {
-        setPlants([...plants, plant]);
-      });
-  };
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    onAddPlant(formData);
+
+    setFormData({
+      name: "",
+      image: "",
+      price: "",
+    });
+  }
 
   return (
-    <main>
-      <NewPlantForm onAddPlant={addPlant} />
-      <Search />
-      <PlantList plants={plants} />
-    </main>
+    <div className="new-plant-form">
+      <h2>New Plant</h2>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Plant name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="image"
+          placeholder="Image URL"
+          value={formData.image}
+          onChange={handleChange}
+        />
+
+        <input
+          type="number"
+          name="price"
+          step="0.01"
+          placeholder="Price"
+          value={formData.price}
+          onChange={handleChange}
+        />
+
+        <button type="submit">Add Plant</button>
+      </form>
+    </div>
   );
 }
 
-export default PlantPage;
+export default NewPlantForm;
