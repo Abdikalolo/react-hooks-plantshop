@@ -8,13 +8,13 @@ function PlantPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3001/plants")
+    fetch("http://localhost:6001/plants")
       .then((response) => response.json())
       .then((data) => setPlants(data));
   }, []);
 
   const addPlant = (newPlant) => {
-    fetch("http://localhost:3001/plants", {
+    fetch("http://localhost:6001/plants", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +23,7 @@ function PlantPage() {
     })
       .then((response) => response.json())
       .then((plant) => {
-        setPlants([...plants, plant]);
+        setPlants((currentPlants) => [...currentPlants, plant]);
       });
   };
 
@@ -35,7 +35,10 @@ function PlantPage() {
     <main>
       <NewPlantForm onAddPlant={addPlant} />
 
-      <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <Search
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
 
       <PlantList plants={filteredPlants} />
     </main>
